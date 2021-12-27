@@ -171,13 +171,29 @@ console.log(q.s)
 
           
         });
+        
+        app.get('/movies/delete/:id', (req, res) => {
+               
+            
+            if(req.params.id <1 || req.params.id>4){
+                res.send({
+                    status:404,
+                    error:true,
+                    message:`the movie ${req.params.id} does not exist`})
+            }
+                objIndex =parseInt(req.params.id-1)
+                console.log(objIndex)
+                movies.splice(objIndex,1)
+                res.send({
+                    movies
+                })  
+        });
+
         app.get('/movies/update', (req, res) => {
 
           
         });
-        app.get('/movies/delete', (req, res) => {
-
-        });
+        
                                     
 
 
