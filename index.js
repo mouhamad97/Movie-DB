@@ -26,4 +26,38 @@ app.get("/time", (req, res) => {
   });
 });
 
+app.get("/hello/:id", (req, res) => {
+    res.send({
+      status: 200,
+      message:"hello " + req.params.id
+    });
+  });
+
+app.get("/search", (req, res) => {
+  
+
+const q = req.query;
+console.log(q.s)
+  if(q.s != "") {
+    res.send({
+        status: 200,
+        message:"ok",
+        data:q.s
+      });
+  }
+  else {
+    res.send({
+        status: 500,
+        error:true,
+        message:"you have to provide a search"
+      });
+  }
+
+
+        });
+
+ 
+
+
+
 app.listen(port, () => console.log(`the server started at http://localhost:${port} `))
