@@ -1,9 +1,18 @@
-
+/** project dependencies */
 const express = require('express')
 const app = express()
 var router = express.Router()
 const port = 3000
 
+
+const movies = [
+    { title: 'Jaws', year: 1975, rating: 8 },
+    { title: 'Avatar', year: 2009, rating: 7.8 },
+    { title: 'Brazil', year: 1985, rating: 8 },
+    { title: 'الإرهاب والكباب', year: 1992, rating: 6.2 }
+]
+
+/** Project routes */
 app.get('/', (req, res) => {
     res.send('ok')
  
@@ -33,7 +42,9 @@ app.get("/hello/:id", (req, res) => {
     });
   });
 
-app.get("/search", (req, res) => {
+
+
+app.get("/search", (req, res) => { 
   
 
 const q = req.query;
@@ -44,6 +55,7 @@ console.log(q.s)
         message:"ok",
         data:q.s
       });
+      
   }
   else {
     res.send({
@@ -56,7 +68,27 @@ console.log(q.s)
 
         });
 
- 
+        app.get('/movies/read', (req, res) => {
+            
+            res.send({
+                status:200,
+                movies:movies                
+            })
+
+        });
+
+        app.get('/movies/create', (req, res) => {
+
+          
+        });
+        app.get('/movies/update', (req, res) => {
+
+          
+        });
+        app.get('/movies/delete', (req, res) => {
+
+        });
+                                    
 
 
 
