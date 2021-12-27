@@ -6,10 +6,10 @@ const port = 3000
 
 
 const movies = [
-    { id: 1, title: 'Jaws', year: 1975, rating: 8 },
-    { id: 2, title: 'Avatar', year: 2009, rating: 7.8 },
-    { id: 3, title: 'Brazil', year: 1985, rating: 8 },
-    { id: 4, title: 'الإرهاب والكباب', year: 1992, rating: 6.2 }
+    {title: 'Jaws', year: 1975, rating: 8 },
+    {title: 'Avatar', year: 2009, rating: 7.8 },
+    {title: 'Brazil', year: 1985, rating: 8 },
+    {title: 'الإرهاب والكباب', year: 1992, rating: 6.2 }
 ]
 
 /** Project routes */
@@ -151,7 +151,23 @@ console.log(q.s)
                     }
           
                 });
-        app.get('/movies/create', (req, res) => {
+        app.get('/movies/add', (req, res) => {
+              let reqQ=req.query;
+              let yearVariable =parseInt(reqQ.year) 
+            
+              var newObj = req.query;
+            if(reqQ.title != "" && reqQ.year != "" && reqQ.year !="" && reqQ.year.toString().length == '4' && !isNaN(yearVariable) ){
+                if(reqQ.rating == ""){
+                        newObj = [reqQ.title, reqQ.year,4]
+                }
+             
+            
+                movies.push(newObj)
+                res.send({
+                    movies
+                })
+            }
+
 
           
         });
