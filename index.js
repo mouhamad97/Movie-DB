@@ -77,6 +77,60 @@ console.log(q.s)
 
         });
 
+        app.get('/movies/read/by-date', (req, res) => {
+            
+        // filteredDate = movies.sort
+           
+        let dateRate = movies.sort((a, b) => {
+            return a.year - b.year;
+        }) ;
+                res.send({
+                     status:200,
+                    data:dateRate
+                }
+                  
+                )
+         });
+
+         app.get('/movies/read/by-rating', (req, res) => {
+            
+            // filteredDate = movies.sort
+               
+            let ratingSort = movies.sort((a, b) => {
+                return a.rating - b.rating;
+            }) ;
+                    res.send({
+                         status:200,
+                        data:ratingSort
+                    }
+                      
+                    )
+             });
+             app.get('/movies/read/by-title', (req, res) => {
+            
+                // filteredDate = movies.sort
+                   
+                let titleSort = movies.sort((a, b) => {
+                    let fa = a.title.toLowerCase(),
+                        fb = b.title.toLowerCase();
+                
+                    if (fa < fb) {
+                        return -1;
+                    }
+                    if (fa > fb) {
+                        return 1;
+                    }
+                    return 0;
+                });
+                        res.send({
+                             status:200,
+                            data:titleSort
+                        }
+                          
+                        )
+                 });
+                 
+
         app.get('/movies/create', (req, res) => {
 
           
