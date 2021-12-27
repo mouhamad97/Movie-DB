@@ -189,7 +189,29 @@ console.log(q.s)
                 })  
         });
 
-        app.get('/movies/update', (req, res) => {
+        app.get('/movies/update/:id', (req, res) => {
+            
+            let objectIndex = parseInt(req.params.id-1)
+
+            let newTitle= req.query.title
+            let newRating= req.query.rating
+            let newYear = req.query.year
+           
+            if(newTitle!=undefined){
+                movies[objectIndex].title = newTitle
+            }
+            if(newRating!=undefined){
+                movies[objectIndex].rating = newRating
+            }
+            if(newYear!=undefined){
+                movies[objectIndex].year = newYear
+            }
+            
+
+      
+            res.send({
+                data:movies
+            })
 
           
         });
