@@ -1,8 +1,8 @@
 /** project dependencies */
 const express = require('express')
 const app = express()
-var router = express.Router()
 const port = 3000
+
 
 
 const movies = [
@@ -151,7 +151,8 @@ console.log(q.s)
                     }
           
                 });
-        app.get('/movies/add', (req, res) => {
+                
+        app.post('/movies/add', (req, res) => {
               let reqQ=req.query;
               let yearVariable =parseInt(reqQ.year) 
             
@@ -172,7 +173,7 @@ console.log(q.s)
           
         });
         
-        app.get('/movies/delete/:id', (req, res) => {
+        app.delete('/movies/delete/:id', (req, res) => {
                
             
             if(req.params.id <1 || req.params.id>4){
@@ -189,7 +190,7 @@ console.log(q.s)
                 })  
         });
 
-        app.get('/movies/update/:id', (req, res) => {
+        app.put('/movies/update/:id', (req, res) => {
             
             let objectIndex = parseInt(req.params.id-1)
 
