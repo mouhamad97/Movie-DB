@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "description": "or CMDB for short",
   "main": "index.js",
-  
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev":"nodemon index.js"
+    "dev": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -19,7 +18,8 @@
   },
   "homepage": "https://github.com/mouhamad97/Movie-DB#readme",
   "dependencies": {
-    "express": "^4.17.2"
+    "express": "^4.17.2",
+    "mongoose": "^6.1.4"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"

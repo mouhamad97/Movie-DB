@@ -2,21 +2,107 @@
 const express = require('express')
 const app = express()
 const port = 3000
+const mongoose = require('mongoose')
+const uri ="mongodb+srv://admin:admin@cluster0.c9ert.mongodb.net/MovieDB?retryWrites=true&w=majority";
+
+mongoose.connect(uri,{ useNewUrlParser: true, useUnifiedTopology: true })
+.then(
+    console.log('we are connected to the database ')
+)
+
+.catch(error=>{
+    console.log('it did not work')
+    }
+)
+
+const db = mongoose.connection
+  const moviesSchema = mongoose.Schema({
+    title: {
+      type: String,
+      required: true,
+    },
+    year: {
+      type: Number,
+      required: true,
+
+    },
+    rating: {
+      type: Number,
+      required: true,
+    }
+  },{  versionKey:false  });
+
+
+  const Movies = mongoose.model('Movie', moviesSchema);
 
 
 
-const movies = [
-    {title: 'Jaws', year: 1975, rating: 8 },
-    {title: 'Avatar', year: 2009, rating: 7.8 },
-    {title: 'Brazil', year: 1985, rating: 8 },
-    {title: 'الإرهاب والكباب', year: 1992, rating: 6.2 }
-]
+
+
+
+
+
+// const movies = [
+//     {title: 'Jaws', year: 1975, rating: 8 },
+//     {title: 'Avatar', year: 2009, rating: 7.8 },
+//     {title: 'Brazil', year: 1985, rating: 8 },
+//     {title: 'الإرهاب والكباب', year: 1992, rating: 6.2 }
+// ]
 
 /** Project routes */
-app.get('/', (req, res) => {
-    res.send('ok')
- 
-})
+
+// app.get('/', (req, res) => {
+//     res.send('ok') 
+// })
+
+app.get("/", async (req, res) => {
+    try {
+      const moviesDetails = await Movies.find({});
+      res.send(moviesDetails);
+    } catch (err) {
+      console.log("~ err", err);
+    }
+  })
+
+
+//   Movies.create({
+//     title: "Jaws",
+//     year: 1975,
+//     rating: 8
+// })
+// .catch(error =>{
+//     console.log('error')
+// })
+
+// Movies.create({
+//     title: "Brazil",
+//     year: 1985,
+//     rating: 8
+// })
+// .catch(error =>{
+//     console.log('error')
+// })
+
+
+// Movies.create({
+//     title: "Avatar",
+//     year: 2009,
+//     rating: 7.8
+// })
+// .catch(error =>{
+//     console.log('error')
+// })
+
+
+// Movies.create({
+//     title: 'الإرهاب والكباب',
+//     year: 1992,
+//     rating: 6.2
+// })
+// .catch(error =>{
+//     console.log('error')
+// })
+
 
 app.get('/test', (req, res) => {
     res.send({
