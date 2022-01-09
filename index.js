@@ -1,5 +1,6 @@
 /** project dependencies */
-const express = require('express')
+const express = require('express');
+const { use } = require('express/lib/application');
 const app = express()
 const port = 3000
 const mongoose = require('mongoose')
@@ -7,13 +8,27 @@ const uri ="mongodb+srv://admin:admin@cluster0.c9ert.mongodb.net/MovieDB?retryWr
 
 mongoose.connect(uri,{ useNewUrlParser: true, useUnifiedTopology: true })
 .then(
-    console.log('we are connected to the database ')
+    app.listen(port, () => console.log(`the server started at http://localhost:${port} `))
 )
-
 .catch(error=>{
     console.log('it did not work')
     }
 )
+
+const users =[
+  {
+    name:"admin",
+    password:"admin1"
+  },
+  {
+    name:"admin",
+    password:"admin2"
+  },
+  {
+    name:"admin",
+    password:"admin3"
+  }
+];
 
 const db = mongoose.connection
   const moviesSchema = mongoose.Schema({
@@ -37,274 +52,175 @@ const db = mongoose.connection
 
 
 
-
-
-
-
-
-// const movies = [
-//     {title: 'Jaws', year: 1975, rating: 8 },
-//     {title: 'Avatar', year: 2009, rating: 7.8 },
-//     {title: 'Brazil', year: 1985, rating: 8 },
-//     {title: 'الإرهاب والكباب', year: 1992, rating: 6.2 }
-// ]
-
-/** Project routes */
-
-// app.get('/', (req, res) => {
-//     res.send('ok') 
-// })
-
 app.get("/", async (req, res) => {
     try {
       const moviesDetails = await Movies.find({});
       res.send(moviesDetails);
     } catch (err) {
-      console.log("~ err", err);
+      console.log("~err", err);
+    }
+  })
+
+  app.get("/movies/add", async (req, res) => {
+    try {
+        let reqQ=req.query;
+        let yearVariable =parseInt(reqQ.year) 
+        let movieTitle=reqQ.title
+        let movieRating=reqQ.rating
+        Movies.create({
+            title: movieTitle,
+            year: yearVariable,
+            rating: movieRating
+        })
+     res.send("the movie is added thank you and don't visit us again")
+    } catch (err) {
+      console.log("~ err in adding ", err);
     }
   })
 
 
-//   Movies.create({
-//     title: "Jaws",
-//     year: 1975,
-//     rating: 8
-// })
-// .catch(error =>{
-//     console.log('error')
-// })
-
-// Movies.create({
-//     title: "Brazil",
-//     year: 1985,
-//     rating: 8
-// })
-// .catch(error =>{
-//     console.log('error')
-// })
 
 
-// Movies.create({
-//     title: "Avatar",
-//     year: 2009,
-//     rating: 7.8
-// })
-// .catch(error =>{
-//     console.log('error')
-// })
+app.get("/search/:id", (req, res) => { 
 
 
-// Movies.create({
-//     title: 'الإرهاب والكباب',
-//     year: 1992,
-//     rating: 6.2
-// })
-// .catch(error =>{
-//     console.log('error')
-// })
-
-
-app.get('/test', (req, res) => {
-    res.send({
-        status:200,
-        message:'ok'
-
+    Movies.findOne({
+      _id:req.params.id
     })
-})
-
-let date = new Date();
-
-app.get("/time", (req, res) => {
-  res.send({
-    status: 200,
-    message: date.getHours() + ":" + date.getSeconds(),
-  });
-});
-
-app.get("/hello/:id", (req, res) => {
-    res.send({
-      status: 200,
-      message:"hello " + req.params.id
-    });
-  });
-
-
-
-app.get("/search", (req, res) => { 
-  
-
-const q = req.query;
-console.log(q.s)
-  if(q.s != "") {
-    res.send({
-        status: 200,
-        message:"ok",
-        data:q.s
-      });
-      
-  }
-  else {
-    res.send({
-        status: 500,
-        error:true,
-        message:"you have to provide a search"
-      });
-  }
-
-
-        });
-
-        app.get('/movies/read', (req, res) => {
-            
-            res.send({
-                status:200,
-                movies:movies                
-            })
-
-        });
-
-        app.get('/movies/read/by-date', (req, res) => {
-            
-        // filteredDate = movies.sort
-           
-        let dateRate = movies.sort((a, b) => {
-            return a.year - b.year;
-        }) ;
-                res.send({
-                     status:200,
-                    data:dateRate
-                }
-                  
-                )
-         });
-
-         app.get('/movies/read/by-rating', (req, res) => {
-            
-            // filteredDate = movies.sort
+    .exec(function(err, movie){
+      if(err){
+        res.send(`error while searching`)
+      }
+      else{
+        res.send(movie)
+      }
+    })
+   });
+    
+app.get('/movies/update/:id',async(req,res)=>{
+          Movies.findByIdAndUpdate({
+            _id:req.params.id 
+          },{$set:
+            {title:req.query.title}
+            ,function(err,newmovie){
+              if(err){
                
-            let ratingSort = movies.sort((a, b) => {
-                return a.rating - b.rating;
-            }) ;
-                    res.send({
-                         status:200,
-                        data:ratingSort
-                    }
-                      
-                    )
-             });
-             app.get('/movies/read/by-title', (req, res) => {
-            
-                // filteredDate = movies.sort
-                   
-                let titleSort = movies.sort((a, b) => {
-                    let fa = a.title.toLowerCase(),
-                        fb = b.title.toLowerCase();
-                
-                    if (fa < fb) {
-                        return -1;
-                    }
-                    if (fa > fb) {
-                        return 1;
-                    }
-                    return 0;
-                });
-                        res.send({
-                             status:200,
-                            data:titleSort
-                        }
-                          
-                        )
-                 });
-                 
-                 
-                 app.get('/movies/read/id/:id', (req, res) => {
-                    
-                    if(req.params.id < 1 || req.params.id >4){
-                        res.send({
-                            status:404,
-                            error:true,
-                            message:`the movie ${req.params.id} does not exist`
-                        })
-                    } else{
-                        let filteredObj = movies.filter(function(movie) {
-                            return movie.id == req.params.id;
-                        });
-                        res.send({
-                            status:200,
-                            data:filteredObj
-                        })
-                        
-                    }
-          
-                });
-                
-        app.post('/movies/add', (req, res) => {
-              let reqQ=req.query;
-              let yearVariable =parseInt(reqQ.year) 
-            
-              var newObj = req.query;
-            if(reqQ.title != "" && reqQ.year != "" && reqQ.year !="" && reqQ.year.toString().length == '4' && !isNaN(yearVariable) ){
-                if(reqQ.rating == ""){
-                        newObj = [reqQ.title, reqQ.year,4]
-                }
+                  console.log(`error while updating`);
              
-            
-                movies.push(newObj)
-                res.send({
-                    movies
-                })
+                }else {
+                  res.send({status:200})
+                }
+              }
             }
+          )
+     })
 
-
-          
-        });
+        app.delete('/movies/delete/:id',async(req,res)=>{
+          Movies.findOneAndRemove({
+            _id:req.params.id 
+          },function(err,newmovies){
+            if(err){
+              console.log("error while deleting")
+            } else{
+                res.send(newmovies)
+            }
+          })
+        })
         
-        app.delete('/movies/delete/:id', (req, res) => {
-               
-            
-            if(req.params.id <1 || req.params.id>4){
-                res.send({
-                    status:404,
-                    error:true,
-                    message:`the movie ${req.params.id} does not exist`})
-            }
-                objIndex =parseInt(req.params.id-1)
-                console.log(objIndex)
-                movies.splice(objIndex,1)
-                res.send({
-                    movies
-                })  
-        });
+       app.get('/movies/update/:id',async(req,res)=>{
 
-        app.put('/movies/update/:id', (req, res) => {
-            
-            let objectIndex = parseInt(req.params.id-1)
+        Movies.findOneAndUpdate({_id:req.params.id},{title: "Great Dane"},{year:2022},{rating:40}, function(err, result){
 
-            let newTitle= req.query.title
-            let newRating= req.query.rating
-            let newYear = req.query.year
-           
-            if(newTitle!=undefined){
-                movies[objectIndex].title = newTitle
-            }
-            if(newRating!=undefined){
-                movies[objectIndex].rating = newRating
-            }
-            if(newYear!=undefined){
-                movies[objectIndex].year = newYear
-            }
-            
+          if(err){
+              res.send(`updating didn't work ${err}`)
+          }
+          else{
+              res.send(`updating works ${result}`)
+              
+          }
+  
+       })
 
-      
-            res.send({
-                data:movies
-            })
+       })
 
-          
-        });
+       app.get('/users', (req, res) => {
+     res.send({users})
+    
+  });
+  
+  const checkuser=()=>{
+    for(var i = 0;i<=users.length-1;i++){
+      if(users[i].name ===req.query.name && users[i].password === req.query.password){
+        return true
+      } else return false
+    }
+  } 
+
+
+       app.get('/users/:loginname/:loginpassword/add', (req, res) => {
+        let reqQ=req.query;      
+        let newObj = req.query;
         
-                                    
+        for(var i = 0;i<=users.length-1;i++){
+
+          if(users[i].name ===req.params.loginname && users[i].password === req.params.loginpassword){
+          if(reqQ.name != "" && reqQ.password != "" ){
+
+            users.push(newObj)
+              res.send({
+                  users
+              })
+          }
+          }else {
+            res.send("user are not authenticated")
+          }
+        }
+    
+  });
+  
+  app.get('/users/:loginname/:loginpassword/delete/:id', (req, res) => {
+         
+    for(var i = 0;i<=users.length-1;i++){
+      if(users[i].name ===req.params.loginname && users[i].password === req.params.loginpassword){
+      if(req.params.id <1 || req.params.id>users.length){
+          res.send({
+              status:404,
+              error:true,
+              message:`the user ${req.params.id} does not exist`})
+      }
+          objIndex =parseInt(req.params.id-1)
+          console.log(objIndex)
+          users.splice(objIndex,1)
+          res.send({
+              users
+          })  
+        }else {
+          res.send("you are not authenticated")
+        }
+      }
+  });
+  app.get('/users/:loginname/:loginpassword/update/:id', (req, res) => {
+
+    for(var i = 0;i<=users.length-1;i++){
+      if(users[i].name ===req.params.loginname && users[i].password === req.params.loginpassword){
+    let objectIndex = parseInt(req.params.id-1)
+
+    let newName= req.query.name
+    let newPassword= req.query.password
 
 
+    if(newName!=undefined){
+        users[objectIndex].name = newName
+    }
+    if(newPassword!=undefined){
+        users[objectIndex].password = newPassword
+    }
 
-app.listen(port, () => console.log(`the server started at http://localhost:${port} `))
+    res.send({
+        data:users
+    })
+  } else {
+    res.send('you are not authenticated')
+  }
+    }
+});
